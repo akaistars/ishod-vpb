@@ -30,7 +30,7 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Move Dart sources into Flutter lib directory
+      - name: Prepare Flutter source layout
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path lib | Out-Null
@@ -45,7 +45,7 @@ jobs:
           }
 
           if (!(Test-Path 'lib/main.dart')) {
-            throw 'lib/main.dart was not found. Check that main.dart exists in the repository root.'
+            throw 'lib/main.dart was not found.'
           }
 
       - name: Generate Windows platform files if needed
