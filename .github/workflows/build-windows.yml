@@ -6,6 +6,7 @@ on:
     branches:
       - main
     paths:
+      - "lib/privacy/**"
       - "main.dart"
       - "demo_auth_gate.dart"
       - "split_tunnel_screen.dart"
