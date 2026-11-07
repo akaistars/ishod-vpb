@@ -1,0 +1,11 @@
+.DS_Store
+.idea/
+.vscode/
+.dart_tool/
+.packages
+.pub-cache/
+.pubspec.lock
+build/
+android/.gradle/
+ios/Pods/
+windows/flutter/ephemeral/
