@@ -19,7 +19,6 @@ jobs:
   build:
     name: Build Windows app
     runs-on: windows-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -34,18 +33,15 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path lib | Out-Null
-
           foreach ($file in @('main.dart', 'demo_auth_gate.dart', 'split_tunnel_screen.dart')) {
             $source = Join-Path (Get-Location) $file
             $destination = Join-Path (Join-Path (Get-Location) 'lib') $file
-
             if ((Test-Path $source) -and !(Test-Path $destination)) {
               Move-Item -Path $source -Destination $destination
             }
           }
-
           if (!(Test-Path 'lib/main.dart')) {
-            throw 'lib/main.dart was not found.'
+            throw 'lib/main.dart was not found. Expected main.dart in repository root.'
           }
 
       - name: Generate Windows platform files if needed
