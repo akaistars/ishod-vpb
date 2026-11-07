@@ -59,7 +59,7 @@ class SpiderVpnApp extends StatelessWidget {
 class AppShell extends StatefulWidget {
   const AppShell({super.key});
   @override
-  State<AppShell> createState() => _AppShellState();
+  State<AppShell> createState() => _AppShellState(); PrivacyRepository? _privacyRepository;
 }
 
 class _AppShellState extends State<AppShell> {
@@ -78,6 +78,7 @@ class _AppShellState extends State<AppShell> {
   void initState() {
     super.initState();
     _loadPalette();
+    _loadPrivacyRepository();
   }
 
   Future<void> _loadPalette() async {
@@ -89,7 +90,20 @@ class _AppShellState extends State<AppShell> {
       }
     } catch (_) {}
   }
-
+  
+Future<void> _loadPrivacyRepository() async {
+  try {
+    final repository = await SecureDemoPrivacyRepository.open();
+    if (mounted) {
+      setState(() => _privacyRepository = repository);
+    }
+  } catch (_) {
+    if (mounted) {
+      setState(() => _privacyRepository = DemoPrivacyRepository());
+    }
+  }
+}
+  
   Future<void> _selectPalette(int index) async {
     if (index < 0 || index >= _paletteOptions.length) return;
     setState(() => _paletteIndex = index);
@@ -669,6 +683,27 @@ class ProfileScreen extends StatefulWidget {
   final Color accent;
   final int selectedPalette;
   final ValueChanged<int> onPaletteChanged;
+  });
+
+  class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({
+    super.key,
+    required this.english,
+    required this.accent,
+    required this.selectedPalette,
+    required this.privacyRepository,
+    required this.onPaletteChanged,
+  });
+
+  final bool english;
+  final Color accent;
+  final int selectedPalette;
+  final PrivacyRepository privacyRepository;
+  final ValueChanged<int> onPaletteChanged;
+
+  @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -896,12 +931,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onTap: _subscription,
           ),
           const SizedBox(height: 8),
-          _Action(
-            icon: Icons.privacy_tip_outlined,
-            title: t('Конфиденциальность', 'Privacy'),
-            subtitle: t('Логин, пароль, Gmail и номер телефона', 'Username, password, Gmail and phone'),
-            accent: widget.accent,
-            onTap: _privacy,
+         _Action(
+  icon: Icons.privacy_tip_outlined,
+  title: t('Конфиденциальность', 'Privacy'),
+  subtitle: t(
+    'Логин, пароль и Gmail',
+    'Username, password and Gmail',
+  ),
+  accent: widget.accent,
+  onTap: () async {
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => PrivacyAccountScreen(
+          repository: widget.privacyRepository,
+          english: widget.english,
+          accent: widget.accent,
+        ),
+      ),
+    );
+
+    if (mounted) {
+      setState(() {});
+    }
+  },
+),
           ),
           const SizedBox(height: 18),
           _SectionTitle(t('Настройки подключения', 'Connection settings')),
