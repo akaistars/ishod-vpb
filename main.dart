@@ -986,7 +986,7 @@ _Action(
         _ => value,
       };
 
-  Future<void> _privacy() async {
+  Future<void> PrivacyAccountScreen(...) async {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
